@@ -22,5 +22,6 @@ const CONFIG = {
   // App settings
   APP_NAME: "MeD – Dawai Ghar Tak",
   DELIVERY_CUTOFF_HOUR: 19, // 7 PM
+  ADMIN_WHATSAPP_NUMBER: "919174451345", // Yahan apna number daalein country code ke sath (bina + ke)
 };
 

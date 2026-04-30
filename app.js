@@ -186,7 +186,7 @@ function register() {
       <div class="brand">
         <div class="brand-icon">✨</div>
         <h1>Nayi Registration</h1>
-        <p>Password SMS pe milega</p>
+        <p>Password WhatsApp pe milega</p>
       </div>
       <div class="form-group">
         <label for="reg-mobile">📱 Mobile Number</label>
@@ -207,7 +207,22 @@ function register() {
     if (!/^\d{10}$/.test(mobile)) { toast("10 digit mobile number daalein.", "error"); return; }
     if (!name) { toast("Naam daalna zaroori hai.", "error"); return; }
     const res = await api({ action: "register", mobile, name });
-    if (res.success) { toast(res.message, "success"); setTimeout(() => navigate("login"), 2000); }
+    if (res.success) { 
+      const text = encodeURIComponent(`Namaste, maine MeD app par register kiya hai. Mera mobile ${mobile} hai, mujhe mera password dein.`);
+      const waLink = `https://wa.me/${CONFIG.ADMIN_WHATSAPP_NUMBER}?text=${text}`;
+      app.querySelector(".auth-card").innerHTML = `
+        <div class="brand">
+          <div class="brand-icon">✅</div>
+          <h1 style="color:var(--green-dark)">Account Ban Gaya!</h1>
+          <p style="margin-top:10px;color:var(--danger-color);font-size:0.9rem;">⚠️ Kisi technical karan se SMS nahi bhej paaye.</p>
+          <p style="margin-top:5px;">Aapka password secure hai. Password paane ke liye niche click karein.</p>
+        </div>
+        <a href="${waLink}" target="_blank" class="btn btn-primary" style="background:#25D366;border:none;margin-top:20px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+          💬 WhatsApp Par Password Lein
+        </a>
+        <button class="btn btn-secondary" onclick="navigate('login')" style="margin-top: 16px;">← Login Par Jayein</button>
+      `;
+    }
     else toast(res.message, "error");
   });
   $("go-login-from-reg").addEventListener("click", () => navigate("login"));
@@ -222,7 +237,7 @@ function resetPassword() {
       <div class="brand">
         <div class="brand-icon">🔄</div>
         <h1>Password Reset</h1>
-        <p>Naya password SMS pe aayega</p>
+        <p>Naya password WhatsApp pe lijiye</p>
       </div>
       <div class="form-group">
         <label for="reset-mobile">📱 Mobile Number</label>
@@ -237,7 +252,22 @@ function resetPassword() {
     const mobile = $("reset-mobile").value.trim();
     if (!/^\d{10}$/.test(mobile)) { toast("10 digit mobile number daalein.", "error"); return; }
     const res = await api({ action: "resetPassword", mobile });
-    if (res.success) { toast(res.message, "success"); setTimeout(() => navigate("login"), 2500); }
+    if (res.success) { 
+      const text = encodeURIComponent(`Namaste, main apna MeD app ka password bhool gaya/gayi hoon. Mera mobile ${mobile} hai, kripya naya password dein.`);
+      const waLink = `https://wa.me/${CONFIG.ADMIN_WHATSAPP_NUMBER}?text=${text}`;
+      app.querySelector(".auth-card").innerHTML = `
+        <div class="brand">
+          <div class="brand-icon">🔄</div>
+          <h1 style="color:var(--green-dark)">Request Bhej Di Gayi</h1>
+          <p style="margin-top:10px;color:var(--danger-color);font-size:0.9rem;">⚠️ Kisi technical karan se SMS nahi bhej paaye.</p>
+          <p style="margin-top:5px;">Naya password paane ke liye WhatsApp par message karein.</p>
+        </div>
+        <a href="${waLink}" target="_blank" class="btn btn-primary" style="background:#25D366;border:none;margin-top:20px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+          💬 WhatsApp Par Password Lein
+        </a>
+        <button class="btn btn-secondary" onclick="navigate('login')" style="margin-top: 16px;">← Login Par Jayein</button>
+      `;
+    }
     else toast(res.message, "error");
   });
   $("go-login-from-reset").addEventListener("click", () => navigate("login"));
