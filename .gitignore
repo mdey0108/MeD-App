@@ -1,0 +1,7 @@
+# Google Apps Script file containing API keys
+google-apps-script.js
+
+# Optional: Add any other files/folders you don't want on GitHub
+node_modules/
+.DS_Store
+*.log
