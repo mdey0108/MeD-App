@@ -9,7 +9,7 @@ const CONFIG = {
   // Google Apps Script Web App URL
   // Deploy your Apps Script as Web App (Execute as: Me, Access: Anyone)
   // and paste the URL here.
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzGIQ_p1PnYs_lk3zCesPzps91GogLetvKoIvzzfi6tfZ4PmqtOcpKgkhi0U6SNhyJ7aQ/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxWiH7uNPiah07lGbzJGCTP5ATlwItSxcomZkJp3YZKpnbJ464z4A5BCkUk4_a9xabfIw/exec",
 
   // Fast2SMS API Key
   // Register at https://fast2sms.com and get your API key
