@@ -293,7 +293,7 @@ function renderOrderList(orders) {
     <div class="order-card" onclick="showOrderModal('user', '${o.order_id}')">
       <div class="order-card-header">
         <span class="order-id">#${o.order_id || "---"}</span>
-        <span class="order-badge ${badgeClass(o.status)}">${o.status || "Pending"}</span>
+        ${(o.status && o.status.toLowerCase() !== "pending") ? `<span class="order-badge ${badgeClass(o.status)}">${o.status}</span>` : ""}
       </div>
       <div class="order-medicines">${o.medicines || ""}</div>
       <div class="order-meta">
@@ -322,7 +322,7 @@ window.showOrderModal = function(type, orderId, tab = "") {
       <button class="modal-close" onclick="document.getElementById('order-modal-overlay').remove()">✕</button>
       <div class="modal-header">
         <h2>Order #${order.order_id || "---"}</h2>
-        <span class="order-badge ${badgeClass(order.status)}">${order.status || "Pending"}</span>
+        ${(order.status && order.status.toLowerCase() !== "pending") ? `<span class="order-badge ${badgeClass(order.status)}">${order.status}</span>` : ""}
       </div>
       
       <div class="modal-section">
@@ -501,8 +501,8 @@ async function submitOrder() {
   if (!area_id) { toast("Area chunein.", "error"); return; }
   if (!medicines) { toast("Dawai ka naam ya takleef likhein.", "error"); return; }
 
-  const area     = State.areas.find(a => a.area_id === area_id);
-  const provider = State.providers.find(p => p.provider_id === prov_id);
+  const area     = State.areas.find(a => String(a.area_id) === String(area_id));
+  const provider = State.providers.find(p => String(p.provider_id) === String(prov_id));
 
   // Upload photos if selected
   let final_photo_urls = [];
@@ -585,7 +585,7 @@ function renderSkOrders(tab) {
     <div class="shop-order-card" onclick="showOrderModal('shop', '${o.order_id}', '${map[tab]}')">
       <div class="order-card-header">
         <span class="order-id">#${o.order_id || "---"}</span>
-        <span class="order-badge ${badgeClass(o.status)}">${o.status || "Pending"}</span>
+        ${(o.status && o.status.toLowerCase() !== "pending") ? `<span class="order-badge ${badgeClass(o.status)}">${o.status}</span>` : ""}
       </div>
       <div class="row">
         <span class="pill">👤 ${o.user_name || o.mobile}</span>
