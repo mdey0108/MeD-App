@@ -655,6 +655,18 @@ function logout() {
 
 // ── Boot ────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
+  // Random Humorous Taglines for Footer
+  const taglines = [
+    "I turn coffee into code and bugs into features.",
+    "Making the internet slightly less broken, one app at a time.",
+    "I talk to computers so you don't have to.",
+    "Turning complex caffeine into elegant code.",
+    "Professional Googler & Occasional Programmer."
+  ];
+  const randomTagline = taglines[Math.floor(Math.random() * taglines.length)];
+  const footerEl = document.getElementById("footer-tagline");
+  if (footerEl) footerEl.textContent = randomTagline;
+
   if (loadSession() && State.user) {
     if (State.user.role === "shopkeeper") navigate("shopkeeperDashboard");
     else navigate("userDashboard");
