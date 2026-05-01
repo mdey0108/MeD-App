@@ -309,17 +309,29 @@ async function userDashboard() {
   $("btn-logout-nav").addEventListener("click", logout);
 
   const res = await api({ action: "getOrders", mobile: user.mobile });
-  if (res.success) renderOrderList(res.orders || []);
+  if (res.success) {
+    const active = res.orders || [];
+    const history = res.history || [];
+    
+    let html = "";
+    if (active.length > 0) {
+      html += `<div class="mt-8 mb-16"><h3 class="mb-8">⚡ Active Orders</h3>${renderOrderCards(active)}</div>`;
+    }
+    if (history.length > 0) {
+      html += `<div class="mt-16" id="history-list-anchor"><h3 class="mb-8 text-muted">📜 Past Orders (History)</h3>${renderOrderCards(history)}</div>`;
+    }
+    
+    if (!active.length && !history.length) {
+      html = `<div class="empty-state"><div class="empty-icon">📭</div><p>Abhi koi order nahi hai.<br>Pehla order karein!</p></div>`;
+    }
+    
+    $("orders-list").innerHTML = html;
+  }
   else { $("orders-list").innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><p>${res.message}</p></div>`; }
 }
 
-function renderOrderList(orders) {
-  const container = $("orders-list");
-  if (!orders.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>Abhi koi order nahi hai.<br>Pehla order karein!</p></div>`;
-    return;
-  }
-  container.innerHTML = orders.map(o => `
+function renderOrderCards(orders) {
+  return orders.map(o => `
     <div class="order-card" onclick="showOrderModal('user', '${o.order_id}')">
       <div class="order-card-header">
         <span class="order-id">#${o.order_id || "---"}</span>
@@ -581,6 +593,7 @@ async function shopkeeperDashboard() {
         <button class="tab-btn active" id="tab-today" data-tab="today">🚀 Aaj</button>
         <button class="tab-btn" id="tab-tomorrow" data-tab="tomorrow">📅 Kal</button>
         <button class="tab-btn" id="tab-week" data-tab="week">🗓️ Hafte Mein</button>
+        <button class="tab-btn" id="tab-history" data-tab="history">📜 History</button>
       </div>
       <div id="sk-order-list"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div></div>
     </div>
@@ -604,7 +617,7 @@ async function shopkeeperDashboard() {
 }
 
 function renderSkOrders(tab) {
-  const map = { today: "today", tomorrow: "tomorrow", week: "thisWeek" };
+  const map = { today: "today", tomorrow: "tomorrow", week: "thisWeek", history: "history" };
   const orders = State.shopkeeperOrders[map[tab]] || [];
   const container = $("sk-order-list");
   if (!orders.length) {
