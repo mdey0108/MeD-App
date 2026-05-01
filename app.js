@@ -51,6 +51,25 @@ function formatDate(iso) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
 function timelineLabel(t) {
+  if (t && t.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const p = t.split("-");
+    const targetDate = new Date(p[0], p[1]-1, p[2]).getTime();
+    
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const tomorrow = today + 24 * 60 * 60 * 1000;
+
+    if (targetDate === today) return "🚀 Aaj";
+    if (targetDate === tomorrow) return "📅 Kal";
+    
+    const diffDays = Math.ceil((targetDate - today) / (24 * 60 * 60 * 1000));
+    if (diffDays <= 3) return "📦 3 Din Mein";
+    if (diffDays <= 7) return "🗓️ 1 Hafte Mein";
+    
+    // Fallback for very far dates
+    const d = new Date(p[0], p[1]-1, p[2]);
+    return "📅 " + d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  }
   const map = { today: "🚀 Aaj", tomorrow: "📅 Kal", "3days": "📦 3 Din Mein", week: "🗓️ 1 Hafte Mein" };
   return map[t] || t;
 }
@@ -546,6 +565,16 @@ async function submitOrder() {
   const area     = State.areas.find(a => String(a.area_id) === String(area_id));
   const provider = State.providers.find(p => String(p.provider_id) === String(prov_id));
 
+  const timelineVal = $("sel-timeline").value;
+  
+  // Calculate Target Delivery Date
+  const deliveryDate = new Date();
+  if (timelineVal === "tomorrow") deliveryDate.setDate(deliveryDate.getDate() + 1);
+  else if (timelineVal === "3days") deliveryDate.setDate(deliveryDate.getDate() + 3);
+  else if (timelineVal === "week") deliveryDate.setDate(deliveryDate.getDate() + 7);
+  
+  const timelineDateStr = deliveryDate.toISOString().split('T')[0]; // YYYY-MM-DD
+
   // Upload photos if selected
   let final_photo_urls = [];
   if (selectedPhotoFiles.length > 0) {
@@ -564,7 +593,7 @@ async function submitOrder() {
     provider_id: prov_id || "",
     medicines,
     photo_url:   final_photo_urls.join(", "),
-    timeline,
+    timeline:    timelineDateStr, // Ab yahaan actual date jaayegi
   });
 
   if (res.success) {
